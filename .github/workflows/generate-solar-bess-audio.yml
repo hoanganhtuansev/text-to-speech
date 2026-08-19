@@ -1,0 +1,31 @@
+name: Generate Solar BESS Audio
+
+on:
+  push:
+    branches: [video-voice-v2]
+
+jobs:
+  generate:
+    runs-on: ubuntu-latest
+    env:
+      GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - run: npm install
+      - name: Check Gemini key
+        run: |
+          if [ -z "$GEMINI_API_KEY" ]; then
+            echo "MISSING_GEMINI_API_KEY_SECRET"
+            exit 2
+          fi
+      - name: Generate WAV + timeline
+        run: node scripts/generate-solar-bess-audio.mjs
+      - uses: actions/upload-artifact@v4
+        with:
+          name: solar-bess-audio
+          path: |
+            output/solar-bess-full.wav
+            output/solar-bess-timeline.json
