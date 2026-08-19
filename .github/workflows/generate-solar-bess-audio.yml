@@ -3,6 +3,8 @@ name: Generate Solar BESS Audio
 on:
   push:
     branches: [video-voice-v2]
+  pull_request:
+    branches: [main]
 
 jobs:
   generate:
